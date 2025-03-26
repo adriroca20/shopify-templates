@@ -1,0 +1,84 @@
+<div class="promotions-group">
+  <h1>{{ section.settings.title }}</h1>
+  <p>{{ section.settings.description }}</p>
+  <div class="promotions-group__promotions">
+    {% for block in section.blocks %}
+      <div class="promotion">
+        <h2>{{ block.settings.title }}</h2>
+        <p>{{ block.settings.description }}</p>
+        <img src="{{ block.settings.image | image_url: width: 500, height: 500 }}" alt="{{ block.settings.title }}">
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% schema %}
+  {
+    "name": "Promotions Group",
+    "tag": "section",
+    "class": "promotions-group",
+    "settings": [
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Title",
+        "default": "Promotions Group    "
+      },
+      {
+        "type": "text",
+        "id": "description",
+        "label": "Description",
+        "default": "Promotions Group Description"
+      },
+      {
+        "type": "image_picker",
+        "id": "image",
+        "label": "Image"
+      },
+      {
+        "type": "select",
+        "id": "button_type",
+        "label": "Button Type",
+        "options": [
+          {
+            "value": "button",
+            "label": "Button"
+          },
+          {
+            "value": "link",
+            "label": "Link"
+          }
+        ],
+        "default": "button"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "promotion",
+        "name": "Promotion",
+        "settings": [
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Title"
+          },
+          {
+            "type": "text",
+            "id": "description",
+            "label": "Description"
+          },
+          {
+            "type": "image_picker",
+            "id": "image",
+            "label": "Image"
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Promotions Group"
+      }
+    ]
+  }
+{% endschema %}
+

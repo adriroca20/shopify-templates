@@ -1,0 +1,27 @@
+{% comment %} 
+  Render a snippet
+
+  Accepts:
+  - product: Product
+  - collection: Collection
+  - article: Article
+  - page: Page
+  - url: {String}
+
+  Usage:
+  {% render 'my-snippet', product: product %}
+{% endcomment %}
+
+{% comment %} 
+  Render a snippet with a variable
+{% endcomment %}
+
+<div class="my-snippet">
+  <h1>Hello World</h1>
+  <p>This is a snippet</p>
+  <p>The product is {{ product.title }}</p>
+  <p>The collection is {{ collection.title }}</p>
+  <p>The article is {{ article.title }}</p>
+  <p>The page is {{ page.title }}</p>
+  <p>The url is {{ url }}</p>
+</div>

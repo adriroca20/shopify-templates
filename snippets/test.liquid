@@ -1,0 +1,114 @@
+{{ 'test.css' | asset_url | stylesheet_tag }}
+{% comment %} 
+    Asignamos un valor a una variable
+{% endcomment %}
+{% assign my_variable = 'hello world' %}
+
+<h1>{{ my_variable }}</h1>
+
+{% comment %} 
+    Asignamos un valor a una variable y eliminamos el espacio en blanco arriba y abajo en el HTML
+{% endcomment %}
+{%- assign my_variable = 'hello world' -%}
+
+<h1>{{ my_variable }}</h1>
+
+{% comment %} 
+  Create number variable
+{% endcomment %}
+{% assign my_number = 10 %}
+
+<h1>{{ my_number }}</h1>
+
+{% comment %} 
+  Create boolean variable
+{% endcomment %}
+{% assign my_boolean = true %}
+
+<h1>{{ my_boolean }}</h1>
+
+{% comment %} 
+  Create array variable
+{% endcomment %}
+{% assign my_array = 'apple, banana, orange' | split: ', ' %}
+
+<h1>{{ my_array[0] }}</h1>
+
+{% comment %} 
+  If else statement
+{% endcomment %}
+{% if my_boolean %}
+  <h1>True</h1>
+{% else %}
+  <h1>False</h1>
+{% endif %}
+
+{% comment %} 
+  For loop
+{% endcomment %}
+{% for item in my_array %}
+  <h1>{{ item }}</h1>
+{% endfor %}
+
+{% comment %} 
+  Object
+{% endcomment %}
+{% assign my_object = {
+  name: 'John',
+  age: 30,
+  city: 'New York'
+} %}
+
+{% comment %} 
+  Capture hace que el html que esta dentro de el se guarde en una variable
+{% endcomment %}
+{% capture my_capture %}
+  <h1>Hello World</h1>
+{% endcapture %}
+
+<h1>{{ my_capture }}</h1>
+
+{% comment %} 
+  Pagination of products
+{% endcomment %}
+{% paginate my_array by 1 %}
+  {% for item in my_array %}
+    <h1>{{ item }}</h1>
+  {% endfor %}
+  {{ paginate | default_pagination }}
+{% endpaginate %}
+
+{% comment %} 
+  Assign plus, minus, times, divide
+{% endcomment %}
+{% assign my_plus = 10 | plus: 10 %}
+{% assign my_minus = 10 | minus: 10 %}
+{% assign my_times = 10 | times: 10 %}
+{% assign my_divide = 10 | divided_by: 10 %}
+
+<h1>{{ my_plus }}</h1>
+<h1>{{ my_minus }}</h1>
+<h1>{{ my_times }}</h1>
+<h1>{{ my_divide }}</h1>
+
+{% comment %} 
+  Truncate string
+{% endcomment %}
+{% assign my_truncate = 'hello world' | truncate: 5 %}
+
+<h1>{{ my_truncate }}</h1>
+
+{% comment %} 
+  Image url
+{% endcomment %}
+{% assign my_image = 'https://via.placeholder.com/150' %}
+
+{{ my_image | image_url: width: 150, height: 150 | image_tag }}
+<img src="{{ my_image | image_url: width: 150, height: 150 }}" alt="Image">
+
+
+
+
+
+
+

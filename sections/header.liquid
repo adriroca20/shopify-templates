@@ -20,6 +20,8 @@
     header-drawer {
       justify-self: start;
       margin-left: -1.2rem;
+      display: flex;
+      align-items: center;
     }
   .svg-wrapper{
   color: #ffffff;
@@ -33,6 +35,7 @@
 
     .menu-drawer-container {
       display: flex;
+      margin-left: 25px;
     }
 
     .list-menu {
@@ -156,18 +159,29 @@
     .header__icons-wrapper {
       display: flex;
       align-items: center;
+      justify-content: flex-end;
       margin-left: auto;
     }
 
     .header__icons {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 15px;
+      justify-content: center;
+      gap: 20px;
     }
 
     .header__icon {
       margin-left: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .header__icon .svg-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .header__search {
@@ -230,6 +244,15 @@
         order: 3;
         width: 100%;
         margin-top: 10px;
+      }
+      
+      .header__icons {
+        gap: 15px;
+      }
+      
+      .header__icon {
+        height: 40px;
+        width: 40px;
       }
     }
 {%- endstyle -%}

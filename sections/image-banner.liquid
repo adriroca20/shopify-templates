@@ -77,6 +77,46 @@
   }
   {% endif %}
 
+  /* Estilos del logo GUCCI */
+  .gucci-logo {
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: var(--font-heading-family);
+    font-size: 10rem;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    color: white;
+    text-align: center;
+    z-index: 3;
+    transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    text-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+  }
+
+  /* Logo fijo en el header al hacer scroll */
+  .gucci-logo.fixed {
+    position: fixed;
+    top: 50px;
+    font-size: 2rem;
+    letter-spacing: 0.1em;
+    transform: translateX(-50%);
+    z-index: 100;
+    text-shadow: none;
+    color: #142314;
+  }
+
+  @media screen and (max-width: 749px) {
+    .gucci-logo {
+      font-size: 6rem;
+    }
+    
+    .gucci-logo.fixed {
+      font-size: 1.5rem;
+      top: 10px;
+    }
+  }
+
   .button-3ah {
     display: inline-block;
     background-color: white;
@@ -165,6 +205,11 @@
   id="Banner-{{ section.id }}"
   class="banner banner--content-align-{{ section.settings.desktop_content_alignment }} banner--content-align-mobile-{{ section.settings.mobile_content_alignment }} banner--{{ section.settings.image_height }}{% if section.settings.stack_images_on_mobile and section.settings.image != blank and section.settings.image_2 != blank %} banner--stacked{% endif %}{% if section.settings.image_height == 'adapt' and section.settings.image != blank %} banner--adapt{% endif %}{% if section.settings.show_text_below %} banner--mobile-bottom{%- endif -%}{% if section.settings.show_text_box == false %} banner--desktop-transparent{% endif %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}"
 >
+  <!-- Logo GUCCI que se animará con scroll -->
+  <div id="gucciLogo" class="gucci-logo">
+    3AH
+  </div>
+
   {%- if section.settings.image != blank -%}
     <div class="banner__media media{% if section.settings.image == blank and section.settings.image_2 == blank %} placeholder{% endif %}{% if section.settings.image_2 != blank %} banner__media-half{% endif %}{% if section.settings.image_behavior != 'none' %} animate--{{ section.settings.image_behavior }}{% endif %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--fade-in{% endif %}">
       {%- liquid
@@ -295,6 +340,148 @@
     </div>
   </div>
 </div>
+
+{% javascript %}
+  function initGucciLogoAnimation() {
+    console.log('Attempting to initialize Gucci Logo Animation...');
+    const gucciLogo = document.getElementById('gucciLogo');
+    const banner = document.querySelector('.header__icons-wrapper');
+    const headerElement = document.querySelector('.header'); // Asumiendo que tu header tiene la clase 'header'
+
+    if (!gucciLogo) {
+      console.error('Elemento gucciLogo no encontrado.');
+      return;
+    } else {
+      console.log('gucciLogo encontrado:', gucciLogo);
+    }
+
+    if (!banner) {
+      console.error('Elemento banner no encontrado (ID: Banner-{{ section.id }}).');
+      return;
+    } else {
+      console.log('Banner encontrado:', banner);
+    }
+
+    if (!headerElement) {
+      // Intentar buscarlo de nuevo por si tarda en cargarse, aunque DOMContentLoaded debería ser suficiente.
+      // Considera usar un selector más específico si 'header' no es la clase correcta o es muy genérica.
+      console.warn('Elemento header (.header) no encontrado inicialmente. Se intentará de nuevo.');
+      // Podrías añadir un pequeño retraso y volver a buscarlo si es necesario, pero idealmente debería estar en DOMContentLoaded.
+      // Si sigue sin encontrarse, verifica la estructura HTML y la clase del header.
+      // return; // Podrías detener la ejecución aquí si el header es crucial para el cálculo inicial.
+    } else {
+      console.log('Header encontrado:', headerElement);
+    }
+
+    // Recalcular dimensiones si cambian (ej. carga diferida de imágenes, CSS)
+    let bannerHeight = banner.offsetHeight;
+    let headerCenter = headerElement ? headerElement.offsetWidth / 2 : window.innerWidth / 2; // Fallback por si no encuentra header
+
+
+    // Actualizar las dimensiones en caso de redimensionamiento
+    window.addEventListener('resize', function() {
+      bannerHeight = banner.offsetHeight;
+      // Re-seleccionar headerElement en caso de que haya cambiado dinámicamente (poco probable pero posible)
+      const currentHeaderElement = document.querySelector('.header');
+      if (currentHeaderElement) {
+         headerCenter = currentHeaderElement.offsetWidth / 2;
+         console.log(`Resized dimensions: bannerHeight=${bannerHeight}, headerCenter=${headerCenter}`);
+      } else {
+         console.warn('Header element not found on resize.');
+         headerCenter = window.innerWidth / 2; // Fallback
+      }
+
+    });
+
+    // Manejar el scroll para animar el logo
+    function handleScroll() {
+      const scrollPosition = window.scrollY || window.pageYOffset;
+      // Asegurarse que bannerHeight > 0 para evitar divisiones por cero o lógica extraña si el banner no tiene altura al inicio
+      if (bannerHeight <= 0) {
+        bannerHeight = banner.offsetHeight; // Intentar recalcular
+        if (bannerHeight <= 0) {
+           console.warn('Banner height is still 0 on scroll. Aborting scroll logic.');
+           return; // Salir si la altura sigue siendo 0
+        }
+      }
+      
+
+      const currentHeaderElement = document.querySelector('.header');
+      if (!currentHeaderElement) {
+          console.warn('Header element not found during scroll handling.');
+          headerCenter = window.innerWidth / 2; // Usar centro de ventana como fallback
+      } else {
+          headerCenter = currentHeaderElement.offsetWidth / 2;
+      }
+
+
+      // Si el usuario ha scrolleado más allá del 25% del banner
+      if (scrollPosition > bannerHeight * 0.25) {
+        if (!gucciLogo.classList.contains('fixed')) {
+            console.log('Adding fixed class');
+            gucciLogo.classList.add('fixed');
+            gucciLogo.style.fontSize = ''; // Resetear tamaño al fijar
+            gucciLogo.style.opacity = '1'; // Asegurar opacidad al fijar
+        }
+        // Ajustar la posición para centrar en el header
+        gucciLogo.style.left = headerCenter + 'px';
+
+      } else {
+         if (gucciLogo.classList.contains('fixed')) {
+             gucciLogo.classList.remove('fixed');
+             gucciLogo.style.left = '50%'; // Resetear a la posición original centrada
+         }
+
+         // Animación de transición suave durante el cambio (solo si NO está fijo)
+         if (scrollPosition > bannerHeight * 0.15 && scrollPosition < bannerHeight * 0.35) {
+            const progress = (scrollPosition - (bannerHeight * 0.15)) / (bannerHeight * 0.2);
+            // Asegurar que progress esté entre 0 y 1
+            const clampedProgress = Math.max(0, Math.min(1, progress));
+            const fontSize = 10 - (clampedProgress * 8); // De 10rem a 2rem
+            gucciLogo.style.fontSize = `${fontSize}rem`;
+         } else if (scrollPosition <= bannerHeight * 0.15) {
+             // Si está por encima de la zona de transición, asegurar tamaño grande
+             gucciLogo.style.fontSize = '10rem';
+         }
+         // Si está por debajo de 0.35 y no fijo, el tamaño ya se habrá ajustado o permanecerá en 2rem si se quitó 'fixed'
+
+         // Cálculo de la opacidad para desvanecer el logo original mientras se scrollea (solo si NO está fijo)
+         const opacity = 1 - (scrollPosition / (bannerHeight * 0.35)); // Desvanecer más rápido, hasta el 35% del scroll
+         const clampedOpacity = Math.max(0, Math.min(1, opacity));
+         gucciLogo.style.opacity = clampedOpacity.toString();
+
+      }
+    }
+
+    // Registrar el evento de scroll
+    // Usar { passive: true } es bueno para el rendimiento, pero asegúrate de que no necesitas preventDefault()
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    // Ejecutar una vez al cargar para posicionar correctamente, después de un pequeño retraso
+    // para dar tiempo a que las imágenes/CSS se asienten y bannerHeight sea correcto.
+    setTimeout(function() {
+      console.log('Executing initial handleScroll call.');
+      bannerHeight = banner.offsetHeight; // Re-check height
+      if (headerElement) headerCenter = headerElement.offsetWidth / 2; // Re-check width
+      console.log(`Dimensions before initial scroll call: bannerHeight=${bannerHeight}, headerCenter=${headerCenter}`);
+      handleScroll();
+    }, 200); // Aumentado ligeramente el retraso
+  }
+
+  // Esperar a que el DOM esté completamente cargado
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initGucciLogoAnimation);
+  } else {
+    // Si el DOMContentLoaded ya se disparó (raro pero posible)
+    console.log('DOMContentLoaded already fired, running initGucciLogoAnimation directly.');
+    initGucciLogoAnimation();
+  }
+
+  // Eliminar el listener de 'load' para evitar ejecuciones duplicadas o tardías.
+  // window.addEventListener('load', function() {
+  //   setTimeout(initGucciLogoAnimation, 200);
+  // });
+{% endjavascript %}
 
 {% schema %}
 {

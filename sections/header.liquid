@@ -95,6 +95,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      transition: background-color 0.3s ease, color 0.3s ease;
     }
 
     .header__icon > span > * {
@@ -254,6 +255,48 @@
         height: 40px;
         width: 40px;
       }
+    }
+
+    /* Styles for scrolled header */
+    .scrolled-past-header .header {
+      background-color: #ffffff;
+      color: #142314;
+      position: fixed;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .scrolled-past-header .header__icon > span > *,
+    .scrolled-past-header .header__icon .icon,
+    .scrolled-past-header .localization-form .icon,
+    .scrolled-past-header .header__icon--account .icon {
+      fill: #142314;
+      color: #142314;
+    }
+
+     .scrolled-past-header .header__icon .svg-wrapper {
+       color: #142314;
+     }
+
+    .scrolled-past-header .header__menu-item {
+      color: #142314;
+    }
+
+    .scrolled-past-header .header__menu-item:hover {
+      color: rgba(20, 35, 20, 0.75);
+    }
+
+    .scrolled-past-header .header__active-menu-item {
+      color: rgba(20, 35, 20, 0.9);
+      text-decoration-color: rgba(20, 35, 20, 0.9);
+    }
+
+    .scrolled-past-header .header__heading-link {
+      color: #142314;
+    }
+
+    .scrolled-past-header .cart-count-bubble {
+      background-color: #142314;
+      color: #ffffff;
     }
 {%- endstyle -%}
 

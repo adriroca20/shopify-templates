@@ -8,6 +8,7 @@
 
 .banner__box {
   text-align: center;
+  padding-bottom: 16px;
 }
 
 /* Needed for gradient continuity with or without animation, the transform scopes the gradient to its container which happens already when animation are turned on */

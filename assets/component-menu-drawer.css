@@ -12,34 +12,104 @@
   height: calc(var(--viewport-height, 100vh) - (var(--header-bottom-position, 100%)));
   top: 100%;
   left: 0;
-  background: rgba(var(--color-foreground), 0.5);
+  background: rgba(var(--color-foreground), 0.3);
   opacity: 0;
   visibility: hidden;
   z-index: 2;
-  transition: opacity 0s, visibility 0s;
+  transition: opacity var(--duration-default) ease, visibility var(--duration-default) ease, backdrop-filter var(--duration-default) ease;
+  backdrop-filter: blur(0);
 }
 
 menu-drawer > details[open] > summary::before {
   visibility: visible;
   opacity: 1;
-  transition: opacity var(--duration-default) ease, visibility var(--duration-default) ease;
+  backdrop-filter: blur(5px);
+  transition: opacity var(--duration-default) ease, visibility var(--duration-default) ease, backdrop-filter var(--duration-default) ease;
 }
 
 .menu-drawer {
-  position: absolute;
-  transform: translateX(-100%);
+  position: fixed;
+  transform: translateX(100%);
   visibility: hidden;
   z-index: 3;
-  left: 0;
-  top: 100%;
+  right: 0;
+  left: auto;
+  top: 40px;
   width: 100%;
   padding: 0;
   background-color: rgb(var(--color-background));
   overflow-x: hidden;
   filter: drop-shadow(
-    var(--drawer-shadow-horizontal-offset) var(--drawer-shadow-vertical-offset) var(--drawer-shadow-blur-radius)
+    calc(-1 * var(--drawer-shadow-horizontal-offset)) var(--drawer-shadow-vertical-offset) var(--drawer-shadow-blur-radius)
       rgba(var(--color-shadow), var(--drawer-shadow-opacity))
   );
+  transition: transform var(--duration-default) ease, visibility 0s var(--duration-default);
+}
+
+.js details[open] > .menu-drawer {
+  transform: translateX(0);
+  visibility: visible;
+  transition: transform var(--duration-default) ease, visibility 0s;
+}
+
+.js details[closing] > .menu-drawer {
+  transform: translateX(100%);
+  visibility: visible;
+  transition: transform var(--duration-default) ease;
+}
+
+.js details[closing] > summary::before {
+  opacity: 0;
+  backdrop-filter: blur(0);
+  transition: opacity var(--duration-default) ease, backdrop-filter var(--duration-default) ease;
+}
+
+.menu-drawer__close-icon-container {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 16px;
+}
+.menu-drawer__close-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background-color: #000;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  padding: 8px;
+}
+
+.menu-drawer__close-icon:hover {
+  transform: scale(1.1);
+}
+
+.menu-drawer__close-icon span {
+  position: relative;
+  display: inline-block;
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.menu-drawer__close-icon span::before,
+.menu-drawer__close-icon span::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: #fff;
+}
+
+.menu-drawer__close-icon span::before {
+  transform: rotate(45deg);
+}
+
+.menu-drawer__close-icon span::after {
+  transform: rotate(-45deg);
 }
 
 .js .menu-drawer {
@@ -47,7 +117,6 @@ menu-drawer > details[open] > summary::before {
   height: calc(var(--viewport-height, 100vh) - (var(--header-bottom-position, 100%)));
 }
 
-.js details[open] > .menu-drawer,
 .js details[open] > .menu-drawer__submenu {
   transition: transform var(--duration-default) ease, visibility var(--duration-default) ease;
 }
@@ -65,7 +134,7 @@ details[open].menu-opening > .menu-drawer__submenu {
 @media screen and (min-width: 750px) {
   .menu-drawer {
     width: 40rem;
-    border-width: 0 var(--drawer-border-width) 0 0;
+    border-width: 0 0 0 var(--drawer-border-width);
     border-style: solid;
     border-color: rgba(var(--color-foreground), var(--drawer-border-opacity));
   }
@@ -141,7 +210,7 @@ details[open].menu-opening > .menu-drawer__submenu {
   left: 0;
   background-color: rgb(var(--color-background));
   z-index: 1;
-  transform: translateX(100%);
+  transform: translateX(-100%);
   visibility: hidden;
 }
 
@@ -164,7 +233,7 @@ details[open].menu-opening > .menu-drawer__submenu {
 }
 
 .menu-drawer__close-button .svg-wrapper {
-  transform: rotate(180deg);
+  transform: rotate(0);
   margin-right: 1rem;
   width: 15px;
 }

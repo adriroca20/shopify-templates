@@ -18,6 +18,11 @@
     </summary>
     <div id="menu-drawer" class="gradient menu-drawer motion-reduce color-{{ section.settings.menu_color_scheme }}">
       <div class="menu-drawer__inner-container">
+        <div class="menu-drawer__close-icon-container">
+          <button class="menu-drawer__close-icon" aria-label="{{ 'accessibility.close' | t }}" onclick="closeMenuDrawer()">
+            <span></span>
+          </button>
+        </div>
         <div class="menu-drawer__navigation-container">
           <nav class="menu-drawer__navigation">
             <ul class="menu-drawer__menu has-submenu list-menu" role="list">
@@ -293,3 +298,18 @@
     </div>
   </details>
 </header-drawer>
+
+<script>
+  function closeMenuDrawer() {
+    const details = document.getElementById('Details-menu-drawer-container');
+    
+    // Add closing state to animate out
+    details.setAttribute('closing', '');
+    
+    // Wait for animation to complete before actually closing
+    setTimeout(() => {
+      details.removeAttribute('open');
+      details.removeAttribute('closing');
+    }, 300); // Match to your CSS transition time
+  }
+</script>

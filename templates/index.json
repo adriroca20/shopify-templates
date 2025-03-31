@@ -75,10 +75,32 @@
         "padding_top": 44,
         "padding_bottom": 36
       }
+    },
+    "promotions_group_g7DHNB": {
+      "type": "promotions-group",
+      "blocks": {
+        "promotion_ngy3ty": {
+          "type": "promotion",
+          "settings": {
+            "title": "asdasd",
+            "description": "asdasd",
+            "image": "shopify://shop_images/person-stands-on-rocks-poking-out-of-the-ocean-shoreline.jpg"
+          }
+        }
+      },
+      "block_order": [
+        "promotion_ngy3ty"
+      ],
+      "settings": {
+        "title": "Hola mundo",
+        "description": "Hola mundo",
+        "button_type": "button"
+      }
     }
   },
   "order": [
     "image_banner",
-    "featured_collection"
+    "featured_collection",
+    "promotions_group_g7DHNB"
   ]
 }

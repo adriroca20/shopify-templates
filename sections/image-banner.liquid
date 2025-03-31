@@ -27,6 +27,116 @@
   #Banner-{{ section.id }}::after {
     opacity: {{ section.settings.image_overlay_opacity | divided_by: 100.0 }};
   }
+
+  {% if section.settings.image_height == 'fullscreen' %}
+  #Banner-{{ section.id }} {
+    min-height: 100vh;
+    height: 100vh;
+    max-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+  }
+
+  #Banner-{{ section.id }} .banner__media {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    left: 0;
+    top: 0;
+    overflow: hidden;
+  }
+
+  #Banner-{{ section.id }} .banner__media img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+  }
+
+  #Banner-{{ section.id }} .banner__content {
+    padding: 0;
+    position: relative;
+    z-index: 2;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    flex-grow: 1;
+    width: 100%;
+  }
+
+  #Banner-{{ section.id }} .banner__box {
+    border: none;
+    max-width: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 2;
+  }
+  {% endif %}
+
+  .button-3ah {
+    display: inline-block;
+    background-color: white;
+    color: #000;
+    font-weight: 500;
+    padding: 12px 30px;
+    min-width: 120px;
+    text-align: center;
+    text-decoration: none;
+    border: 1px solid #e7e7e7;
+    border-radius: 4px;
+    font-size: 14px;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+    margin: 0.5rem;
+  }
+
+  .button-3ah:hover {
+    transform: scale(0.95);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  }
+  
+  .button-3ah:active {
+    transform: scale(0.92);
+  }
+  
+  .banner__buttons--3ah {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+  
+  .banner__buttons--3ah.banner__buttons--row {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  
+  .banner__buttons--3ah.banner__buttons--column {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .banner__buttons--row .banner-3ah-button:not(:last-child) {
+    margin-right: 1rem;
+  }
+  
+  .banner__buttons--column .banner-3ah-button:not(:last-child) {
+    margin-bottom: 1rem;
+  }
+
+  @media screen and (max-width: 749px) {
+    .banner__buttons--3ah.banner__buttons--row {
+      justify-content: center;
+    }
+    
+    .banner__buttons--row .banner-3ah-button {
+      margin: 0.5rem;
+    }
+  }
 {%- endstyle -%}
 
 {%- liquid
@@ -160,6 +270,26 @@
                 </a>
               {%- endif -%}
             </div>
+          {%- when 'buttons-3ah' -%}
+            <div
+              class="banner__buttons{% if block.settings.buttons_count > 1 %} banner__buttons--multiple{% endif %} banner__buttons--3ah banner__buttons--{{ block.settings.buttons_direction }}"
+              {{ block.shopify_attributes }}
+            >
+              {%- for i in (1..block.settings.buttons_count) -%}
+                {%- assign button_text_key = 'button_text_' | append: i -%}
+                {%- assign button_link_key = 'button_link_' | append: i -%}
+                {%- assign button_text = block.settings[button_text_key] -%}
+                {%- assign button_link = block.settings[button_link_key] -%}
+                
+                {%- if button_text != blank -%}
+                  {%- render 'button-3ah',
+                    text: button_text,
+                    url: button_link,
+                    class: 'banner-3ah-button'
+                  -%}
+                {%- endif -%}
+              {%- endfor -%}
+            </div>
         {%- endcase -%}
       {%- endfor -%}
     </div>
@@ -214,10 +344,14 @@
         {
           "value": "large",
           "label": "t:sections.image-banner.settings.image_height.options__4.label"
+        },
+        {
+          "value": "fullscreen",
+          "label": "Pantalla completa"
         }
       ],
-      "default": "medium",
-      "label": "t:sections.image-banner.settings.image_height.label"
+      "default": "fullscreen",
+      "label": "Pantalla completa"
     },
     {
       "type": "select",
@@ -436,53 +570,91 @@
       ]
     },
     {
-      "type": "buttons",
-      "name": "t:sections.image-banner.blocks.buttons.name",
+      "type": "buttons-3ah",
+      "name": "Botones 3ah",
       "limit": 1,
       "settings": [
         {
-        "type": "header",
-        "content": "t:sections.image-banner.blocks.buttons.settings.header_1.content"
+          "type": "select",
+          "id": "buttons_direction",
+          "options": [
+            {
+              "value": "row",
+              "label": "Fila (horizontal)"
+            },
+            {
+              "value": "column",
+              "label": "Columna (vertical)"
+            }
+          ],
+          "default": "row",
+          "label": "Dirección de los botones"
+        },
+        {
+          "type": "range",
+          "id": "buttons_count",
+          "min": 1,
+          "max": 4,
+          "step": 1,
+          "default": 1,
+          "label": "Cantidad de botones"
+        },
+        {
+          "type": "header",
+          "content": "Botón 1"
         },
         {
           "type": "text",
-          "id": "button_label_1",
-          "default": "t:sections.image-banner.blocks.buttons.settings.button_label_1.default",
-          "label": "t:sections.image-banner.blocks.buttons.settings.button_label_1.label",
-          "info": "t:sections.image-banner.blocks.buttons.settings.button_label_1.info"
+          "id": "button_text_1",
+          "default": "PARA ELLA",
+          "label": "Texto del botón 1"
         },
         {
           "type": "url",
           "id": "button_link_1",
-          "label": "t:sections.image-banner.blocks.buttons.settings.button_link_1.label"
+          "label": "Enlace del botón 1"
         },
         {
-          "type": "checkbox",
-          "id": "button_style_secondary_1",
-          "default": false,
-          "label": "t:sections.image-banner.blocks.buttons.settings.button_style_secondary_1.label"
-        },
-        {
-        "type": "header",
-        "content": "t:sections.image-banner.blocks.buttons.settings.header_2.content"
+          "type": "header",
+          "content": "Botón 2"
         },
         {
           "type": "text",
-          "id": "button_label_2",
-          "default": "t:sections.image-banner.blocks.buttons.settings.button_label_2.default",
-          "label": "t:sections.image-banner.blocks.buttons.settings.button_label_2.label",
-          "info": "t:sections.image-banner.blocks.buttons.settings.button_label_2.info"
+          "id": "button_text_2",
+          "label": "Texto del botón 2"
         },
         {
           "type": "url",
           "id": "button_link_2",
-          "label": "t:sections.image-banner.blocks.buttons.settings.button_link_2.label"
+          "label": "Enlace del botón 2"
         },
         {
-          "type": "checkbox",
-          "id": "button_style_secondary_2",
-          "default": false,
-          "label": "t:sections.image-banner.blocks.buttons.settings.button_style_secondary_2.label"
+          "type": "header",
+          "content": "Botón 3"
+        },
+        {
+          "type": "text",
+          "id": "button_text_3",
+          "label": "Texto del botón 3"
+        },
+        {
+          "type": "url",
+          "id": "button_link_3",
+          "label": "Enlace del botón 3"
+        },
+        {
+          "type": "header",
+          "content": "Botón 4"
+        },
+        {
+          "type": "text",
+          "id": "button_text_4",
+          "label": "Texto del botón 4"
+        },
+        {
+          "type": "url",
+          "id": "button_link_4",
+          "label": "Enlace del botón 4"
         }
       ]
     }
@@ -498,10 +670,12 @@
           "type": "text"
         },
         {
-          "type": "buttons"
+          "type": "buttons-3ah"
         }
       ]
     }
   ]
 }
 {% endschema %}
+
+

@@ -1,84 +1,243 @@
-<div class="promotions-group">
-  <h1>{{ section.settings.title }}</h1>
-  <p>{{ section.settings.description }}</p>
-  <div class="promotions-group__promotions">
-    {% for block in section.blocks %}
-      <div class="promotion">
-        <h2>{{ block.settings.title }}</h2>
-        <p>{{ block.settings.description }}</p>
-        <img src="{{ block.settings.image | image_url: width: 500, height: 500 }}" alt="{{ block.settings.title }}">
+{{ 'section-multicolumn.css' | asset_url | stylesheet_tag }}
+
+<div class="promotions-group color-{{ section.settings.color_scheme }} gradient{% if section.settings.show_divider %} section--divider{% endif %}">
+  <div class="page-width">
+    <div class="title-wrapper-with-link title-wrapper--self-padded-mobile title-wrapper--no-top-margin{% if section.settings.title == blank %} title-wrapper-with-link--no-heading{% endif %}">
+      {%- if section.settings.title != blank -%}
+        <h2 class="promotions-group__title inline-richtext {{ section.settings.heading_size }}">
+          {{ section.settings.title }}
+        </h2>
+      {%- endif -%}
+      {%- if section.settings.button_label != blank and section.settings.button_link != blank -%}
+        <a href="{{ section.settings.button_link }}"
+          class="link underlined-link large-up-hide"
+        >
+          {{ section.settings.button_label | escape }}
+        </a>
+      {%- endif -%}
+    </div>
+    <div class="promotions-group__row grid grid--1-col{% if section.blocks.size > 1 %} grid--2-col-tablet{% endif %}{% if section.blocks.size > 2 %} grid--3-col-desktop{% endif %}{% if section.settings.swipe_on_mobile and section.blocks.size > 1 %} slider slider--mobile grid--peek{% endif %}">
+      {%- liquid
+        assign highest_ratio = 0
+        for block in section.blocks
+          if block.settings.image.aspect_ratio > highest_ratio
+            assign highest_ratio = block.settings.image.aspect_ratio
+          endif
+        endfor
+      -%}
+      {%- for block in section.blocks -%}
+        <div class="promotions-group__column grid__item{% if section.settings.swipe_on_mobile %} slider__slide{% endif %}{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}" {{ block.shopify_attributes }}>
+          {% render 'promo-card',
+            image: block.settings.image,
+            title: block.settings.title,
+            link: block.settings.button_link,
+            link_text: block.settings.button_label,
+            overlay_opacity: block.settings.overlay_opacity,
+            text_color: block.settings.text_color
+          %}
+        </div>
+      {%- endfor -%}
+    </div>
+    
+    {%- if section.settings.button_label != blank and section.settings.button_link != blank -%}
+      <div class="center{% if settings.animations_reveal_on_scroll %} scroll-trigger animate--slide-in{% endif %}">
+        <a href="{{ section.settings.button_link }}"
+          class="button button--primary small-hide"
+        >
+          {{ section.settings.button_label | escape }}
+        </a>
       </div>
-    {% endfor %}
+    {%- endif -%}
   </div>
 </div>
-{% schema %}
-  {
-    "name": "Promotions Group",
-    "tag": "section",
-    "class": "promotions-group",
-    "settings": [
-      {
-        "type": "text",
-        "id": "title",
-        "label": "Title",
-        "default": "Promotions Group    "
-      },
-      {
-        "type": "text",
-        "id": "description",
-        "label": "Description",
-        "default": "Promotions Group Description"
-      },
-      {
-        "type": "image_picker",
-        "id": "image",
-        "label": "Image"
-      },
-      {
-        "type": "select",
-        "id": "button_type",
-        "label": "Button Type",
-        "options": [
-          {
-            "value": "button",
-            "label": "Button"
-          },
-          {
-            "value": "link",
-            "label": "Link"
-          }
-        ],
-        "default": "button"
-      }
-    ],
-    "blocks": [
-      {
-        "type": "promotion",
-        "name": "Promotion",
-        "settings": [
-          {
-            "type": "text",
-            "id": "title",
-            "label": "Title"
-          },
-          {
-            "type": "text",
-            "id": "description",
-            "label": "Description"
-          },
-          {
-            "type": "image_picker",
-            "id": "image",
-            "label": "Image"
-          }
-        ]
-      }
-    ],
-    "presets": [
-      {
-        "name": "Promotions Group"
-      }
-    ]
+
+<style>
+  .promotions-group {
+    padding-top: 60px;
+    padding-bottom: 60px;
   }
+  
+  .promotions-group__title {
+    margin-bottom: 30px;
+    font-family: var(--font-heading-family);
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    text-align: center;
+  }
+  
+  .promotions-group__row {
+    margin-bottom: 40px;
+  }
+  
+  .center {
+    text-align: center;
+  }
+  
+  @media screen and (min-width: 750px) {
+    .promotions-group {
+      padding-top: 80px;
+      padding-bottom: 80px;
+    }
+  }
+  
+  @media screen and (min-width: 990px) {
+    .promotions-group {
+      padding-top: 100px;
+      padding-bottom: 100px;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Grupo de promociones",
+  "tag": "section",
+  "class": "section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "default": "Colecciones",
+      "label": "Título"
+    },
+    {
+      "type": "select",
+      "id": "heading_size",
+      "options": [
+        {
+          "value": "h2",
+          "label": "t:sections.all.heading_size.options__1.label"
+        },
+        {
+          "value": "h1",
+          "label": "t:sections.all.heading_size.options__2.label"
+        },
+        {
+          "value": "h0",
+          "label": "t:sections.all.heading_size.options__3.label"
+        }
+      ],
+      "default": "h1",
+      "label": "t:sections.all.heading_size.label"
+    },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "options": [
+        {
+          "value": "accent-1",
+          "label": "t:sections.all.colors.accent_1.label"
+        },
+        {
+          "value": "accent-2",
+          "label": "t:sections.all.colors.accent_2.label"
+        },
+        {
+          "value": "background-1",
+          "label": "t:sections.all.colors.background_1.label"
+        },
+        {
+          "value": "background-2",
+          "label": "t:sections.all.colors.background_2.label"
+        },
+        {
+          "value": "inverse",
+          "label": "t:sections.all.colors.inverse.label"
+        }
+      ],
+      "default": "background-1",
+      "label": "t:sections.all.colors.label"
+    },
+    {
+      "type": "checkbox",
+      "id": "swipe_on_mobile",
+      "default": false,
+      "label": "Permitir deslizar en móvil"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_divider",
+      "default": false,
+      "label": "t:sections.all.show_divider.label"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "default": "Ver todo",
+      "label": "Texto del botón"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Enlace del botón"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "column",
+      "name": "Promoción",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Imagen"
+        },
+        {
+          "type": "text",
+          "id": "title",
+          "default": "Título de la promoción",
+          "label": "Título"
+        },
+        {
+          "type": "text",
+          "id": "button_label",
+          "default": "Descubrir",
+          "label": "Texto del botón"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "Enlace del botón"
+        },
+        {
+          "type": "range",
+          "id": "overlay_opacity",
+          "min": 0,
+          "max": 100,
+          "step": 5,
+          "unit": "%",
+          "label": "Opacidad del overlay",
+          "default": 30
+        },
+        {
+          "type": "color",
+          "id": "text_color",
+          "label": "Color del texto",
+          "default": "#ffffff"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Grupo de promociones",
+      "blocks": [
+        {
+          "type": "column"
+        },
+        {
+          "type": "column"
+        },
+        {
+          "type": "column"
+        }
+      ]
+    }
+  ]
+}
 {% endschema %}
 

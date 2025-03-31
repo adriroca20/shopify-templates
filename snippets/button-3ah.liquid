@@ -1,0 +1,19 @@
+{% comment %}
+  Botón personalizado con efecto de reducción al hacer hover
+  
+  Acepta:
+  - text: Texto del botón (default: "PARA ELLA")
+  - url: URL del enlace (default: "#")
+  - class: Clases adicionales
+{% endcomment %}
+
+{%- liquid
+  assign text = text | default: "PARA ELLA"
+  assign url = url | default: "#"
+  assign custom_class = class | default: ""
+-%}
+
+<a href="{{ url }}" class="button-3ah {{ custom_class }}">
+  {{ text }}
+</a>
+

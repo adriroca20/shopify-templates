@@ -1,0 +1,169 @@
+{% comment %}
+  Uso:
+  {% render 'promo-card',
+    image: section.settings.image,
+    title: section.settings.title,
+    link: section.settings.link,
+    link_text: section.settings.link_text,
+    overlay_opacity: section.settings.overlay_opacity,
+    text_color: section.settings.text_color
+  %}
+{% endcomment %}
+
+<div class="promo-card">
+  <div class="promo-card__media-container">
+    {% if image != blank %}
+      <img 
+        class="promo-card__image"
+        src="{{ image | img_url: '1200x' }}"
+        srcset="
+          {{ image | img_url: '400x' }} 400w,
+          {{ image | img_url: '600x' }} 600w,
+          {{ image | img_url: '800x' }} 800w,
+          {{ image | img_url: '1000x' }} 1000w,
+          {{ image | img_url: '1200x' }} 1200w
+        "
+        sizes="(min-width: 750px) 50vw, 100vw"
+        alt="{{ image.alt | escape }}"
+        loading="lazy"
+        width="{{ image.width }}"
+        height="{{ image.height }}"
+      >
+    {% else %}
+      <div class="promo-card__placeholder">
+        {{ 'lifestyle-1' | placeholder_svg_tag: 'promo-card__placeholder-image' }}
+      </div>
+    {% endif %}
+    
+    <div class="promo-card__overlay" style="opacity: {{ overlay_opacity | default: 30 | divided_by: 100.0 }};"></div>
+  </div>
+
+  <div class="promo-card__content" style="color: {{ text_color | default: '#ffffff' }}">
+    {% if title != blank %}
+      <h3 class="promo-card__title">{{ title }}</h3>
+    {% endif %}
+    
+    {% if link != blank and link_text != blank %}
+      <a href="{{ link }}" class="promo-card__link">
+        <span class="promo-card__link-text">{{ link_text }}</span>
+        <span class="promo-card__link-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </span>
+      </a>
+    {% endif %}
+  </div>
+</div>
+
+<style>
+  .promo-card {
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 30px;
+    height: 100%;
+    min-height: 360px;
+  }
+  
+  .promo-card__media-container {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+  }
+  
+  .promo-card__image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    transition: transform 0.8s ease;
+  }
+  
+  .promo-card:hover .promo-card__image {
+    transform: scale(1.05);
+  }
+  
+  .promo-card__placeholder {
+    width: 100%;
+    height: 100%;
+    background-color: #f8f8f8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .promo-card__placeholder-image {
+    width: 100%;
+    height: 100%;
+    max-height: 400px;
+  }
+  
+  .promo-card__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #000000;
+    z-index: 1;
+  }
+  
+  .promo-card__content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 40px 30px;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .promo-card__title {
+    font-size: 28px;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 20px;
+    font-family: var(--font-heading-family);
+  }
+  
+  .promo-card__link {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    color: inherit;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    border-bottom: 1px solid;
+    padding-bottom: 3px;
+    transition: opacity 0.3s ease;
+  }
+  
+  .promo-card__link:hover {
+    opacity: 0.8;
+  }
+  
+  .promo-card__link-icon {
+    margin-left: 8px;
+    display: flex;
+    align-items: center;
+  }
+  
+  @media screen and (min-width: 750px) {
+    .promo-card__title {
+      font-size: 32px;
+    }
+  }
+  
+  @media screen and (min-width: 990px) {
+    .promo-card__title {
+      font-size: 36px;
+    }
+  }
+</style> 

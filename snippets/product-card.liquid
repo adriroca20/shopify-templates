@@ -1,0 +1,35 @@
+<div class="product-card {% if product.type == 'Bolso' %}product-card--bag{% endif %}">
+  <a href="{{ product.url | within: collection }}" class="product-card__link">
+    <div class="product-card__image-container">
+      {% if product.featured_image %}
+        <img 
+          class="product-card__image"
+          src="{{ product.featured_image | img_url: '300x300', crop: 'center' }}"
+          alt="{{ product.featured_image.alt | escape }}"
+          loading="lazy"
+          width="300"
+          height="300"
+        >
+      {% else %}
+        {{ 'product-1' | placeholder_svg_tag: 'product-card__image placeholder-svg' }}
+      {% endif %}
+      
+      {% if product.type == 'Bolso' and product.tags contains 'cuero' %}
+        <span class="product-card__tag">Cuero</span>
+      {% endif %}
+    </div>
+
+    <div class="product-card__info">
+      <h3 class="product-card__title">{{ product.title }}</h3>
+      
+      <div class="product-card__price">
+        {% if product.compare_at_price > product.price %}
+          <span class="product-card__price-old">{{ product.compare_at_price | money }}</span>
+          <span class="product-card__price-current">{{ product.price | money }}</span>
+        {% else %}
+          <span class="product-card__price-current">{{ product.price | money }}</span>
+        {% endif %}
+      </div>
+    </div>
+  </a>
+</div> 
